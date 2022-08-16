@@ -1,0 +1,5 @@
+{
+  "AppSyncApiName": "authcognito",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false
+}
