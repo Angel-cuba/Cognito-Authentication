@@ -3,12 +3,11 @@ import React from 'react';
 import { API, graphqlOperation, Auth } from 'aws-amplify';
 import { listVideos } from '../graphql/queries';
 import { FavoriteOutlined, PlayArrow } from '@mui/icons-material';
-import {useStyles} from './styles'
+
 
 const Home = () => {
   const [videos, setVideos] = React.useState([]);
   console.log('videos', videos);
-  const styles= useStyles()
   const fetchVideo = async () => {
     try {
       const { data }: any = await API.graphql(graphqlOperation(listVideos));
@@ -22,7 +21,7 @@ const Home = () => {
   }, []);
   return (
     <div>
-      <div className={styles.header}>
+      <div className="header">
         <button onClick={() => Auth.signOut()}>Go to Out</button>
         <h2>Content</h2>
       </div>
