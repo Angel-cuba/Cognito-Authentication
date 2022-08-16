@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Initial from './components/Initial';
+// import Initial from './components/Initial';
 import Home from './components/Home';
 import GoOut from './components/GoOut';
 //Amplify 
