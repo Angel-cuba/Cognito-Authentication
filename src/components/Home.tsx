@@ -5,6 +5,7 @@ import { listVideos } from '../graphql/queries';
 import { FavoriteOutlined, Pause, PlayArrow } from '@mui/icons-material';
 import Baner from './Baner';
 import { updateVideo } from '../graphql/mutations';
+import Video from './Video';
 
 const Home = () => {
   const [videos, setVideos] = React.useState([]);
@@ -71,6 +72,7 @@ const Home = () => {
         <h1>No hay</h1>
       ) : (
         videos.map((video: any, index: any) => (
+          <>
           <Paper key={video.id} variant="elevation" elevation={2} style={{ margin: '10px' }}>
             <div className="videoCard">
               <IconButton
@@ -92,7 +94,11 @@ const Home = () => {
               </div>
               <div className="description">{video.description}</div>
             </div>
+         {
+            playVideo === index && videoUrl && <Video url={videoUrl} />
+         }
           </Paper>
+          </>
         ))
       )}
     </div>
