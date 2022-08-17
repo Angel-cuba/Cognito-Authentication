@@ -1,6 +1,6 @@
 import { IconButton, Paper } from '@mui/material';
 import React from 'react';
-import { API, graphqlOperation } from 'aws-amplify';
+import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { listVideos } from '../graphql/queries';
 import { FavoriteOutlined, Pause, PlayArrow } from '@mui/icons-material';
 import Baner from './Baner';
@@ -9,6 +9,7 @@ import { updateVideo } from '../graphql/mutations';
 const Home = () => {
   const [videos, setVideos] = React.useState([]);
   const [playVideo, setPlayVideo] = React.useState('');
+  const [videoUrl, setVideoUrl] = React.useState('');
   console.log('videos', videos);
   const fetchVideo = async () => {
     try {
@@ -42,18 +43,23 @@ const Home = () => {
     } catch (error) {
       console.log(error);
     }
-    // const newVideos = videos.map((video) => {
-    //   if (video.id === '1') {
-    //     return { ...video, likes: video.likes + 1 };
-    //   }
-    //   return video;
-    // }).sort((a, b) => b.likes - a.likes);
-    // setVideos(newVideos);
   };
-  const play = (index: any) => {
+  const play = async (index: any, url: string) => {
     if (playVideo === index) {
       setPlayVideo('');
       return;
+    }
+
+    // const videoUrl = url
+    try {
+      const urlAccess = await Storage.get(url, { expires: 60 });
+      console.log('urlAccess', urlAccess);
+      setPlayVideo(index);
+      setVideoUrl(urlAccess);
+    } catch (error) {
+      console.log('error accessing url from file on s3', error);
+      setPlayVideo('');
+      setVideoUrl('');
     }
     setPlayVideo(index);
   };
@@ -69,7 +75,7 @@ const Home = () => {
             <div className="videoCard">
               <IconButton
                 aria-label="play"
-                onClick={() => play(index)}
+                onClick={() => play(index, video.url)}
                 style={{ cursor: 'pointer' }}
               >
                 {playVideo !== index ? <PlayArrow /> : <Pause />}
