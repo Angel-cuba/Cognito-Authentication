@@ -1,12 +1,14 @@
 import { IconButton, Paper } from '@mui/material';
 import React from 'react';
-import { API, graphqlOperation, Auth } from 'aws-amplify';
+import { API, graphqlOperation } from 'aws-amplify';
 import { listVideos } from '../graphql/queries';
-import { FavoriteOutlined, PlayArrow } from '@mui/icons-material';
-
+import { FavoriteOutlined, Pause, PlayArrow } from '@mui/icons-material';
+import Baner from './Baner';
+import { updateVideo } from '../graphql/mutations';
 
 const Home = () => {
   const [videos, setVideos] = React.useState([]);
+  const [playVideo, setPlayVideo] = React.useState('');
   console.log('videos', videos);
   const fetchVideo = async () => {
     try {
@@ -19,27 +21,65 @@ const Home = () => {
   React.useEffect(() => {
     fetchVideo();
   }, []);
+
+  const addLike = async (index: any) => {
+    try {
+      const video: any = videos[index];
+      video.like = video.like + 1;
+
+      delete video.createdAt;
+      delete video.updatedAt;
+
+      const { data }: any = await API.graphql(
+        graphqlOperation(updateVideo, {
+          input: video,
+        })
+      );
+      console.log('data', data);
+      const videoData: any = [...videos];
+      videoData[index] = data.updateVideo;
+      setVideos(videoData);
+    } catch (error) {
+      console.log(error);
+    }
+    // const newVideos = videos.map((video) => {
+    //   if (video.id === '1') {
+    //     return { ...video, likes: video.likes + 1 };
+    //   }
+    //   return video;
+    // }).sort((a, b) => b.likes - a.likes);
+    // setVideos(newVideos);
+  };
+  const play = (index: any) => {
+    if (playVideo === index) {
+      setPlayVideo('');
+      return;
+    }
+    setPlayVideo(index);
+  };
   return (
     <div>
-      <div className="header">
-        <button onClick={() => Auth.signOut()}>Go to Out</button>
-        <h2>Content</h2>
-      </div>
+      <Baner />
+
       {!videos ? (
         <h1>No hay</h1>
       ) : (
-        videos.map((video: any) => (
-          <Paper key={video.id} variant="elevation" elevation={2}>
+        videos.map((video: any, index: any) => (
+          <Paper key={video.id} variant="elevation" elevation={2} style={{ margin: '10px' }}>
             <div className="videoCard">
-              <IconButton aria-label="delete">
-                <PlayArrow />
+              <IconButton
+                aria-label="play"
+                onClick={() => play(index)}
+                style={{ cursor: 'pointer' }}
+              >
+                {playVideo !== index ? <PlayArrow /> : <Pause />}
               </IconButton>
               <div className="">
                 <div className="videoName">{video.name}</div>
                 <div className="author">{video.author}</div>
               </div>
               <div className="likes">
-                <IconButton aria-label="like">
+                <IconButton aria-label="like" onClick={() => addLike(index)}>
                   <FavoriteOutlined />
                   {video.like}
                 </IconButton>

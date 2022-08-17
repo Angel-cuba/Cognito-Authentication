@@ -20,3 +20,21 @@
 .App-link {
   color: #61dafb;
 }
+.header{
+  background-color: #6794ef;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  padding: 0.5rem 1rem;
+  justify-content: space-around;
+}
+.videoCard {
+  background-color: rgba(214, 20, 20, 0.121);
+  display: flex;
+  justify-content: space-around;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.21);
+}
