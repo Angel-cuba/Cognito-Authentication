@@ -1,14 +1,11 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Button } from '@mui/material';
+import { Auth } from 'aws-amplify';
+import React from 'react';
 
+const GoOut = () => (
+  <Button variant="contained" color="error" onClick={() => Auth.signOut()}>
+    Logout
+  </Button>
+);
 
-const GoOut = () => {
-const navigation = useNavigate()
-  return (
-    <div>GoOut
-      <button onClick={() => navigation('/')}>Go out</button>
-    </div>
-  )
-}
-
-export default GoOut
+export default GoOut;

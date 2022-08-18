@@ -1,5 +1,6 @@
 import { Auth } from 'aws-amplify'
 import React from 'react'
+import GoOut from './GoOut'
 
 const Initial = () => {
   const [user, setUser] = React.useState(null)
@@ -20,7 +21,7 @@ const Initial = () => {
   return (
     <div className="header">
         <h2>Some content</h2>
-        <button onClick={() => Auth.signOut()}>Go to Out</button>
+        <GoOut/>
       </div>
   )
 }
