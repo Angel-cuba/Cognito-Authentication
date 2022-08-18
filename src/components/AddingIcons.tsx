@@ -1,13 +1,17 @@
 import { TextField } from '@aws-amplify/ui-react';
-import { Publish } from '@mui/icons-material';
+import UploadIcon from '@mui/icons-material/Upload';
 import { IconButton } from '@mui/material';
+import { API, graphqlOperation, Storage } from 'aws-amplify';
+import { v4 as uuid } from 'uuid';
 import React from 'react';
+import { createVideo } from '../graphql/mutations';
 
 type DataType = {
-  title: string,
-  description: string,
-  author: string,
-}
+  // video(arg0: string, video: any, arg2: { contentType: string; }): { key: any; } | PromiseLike<{ key: any; }>;
+  title: string;
+  description: string;
+  author: string;
+};
 
 const AddingIcons = ({ onUpload }: any) => {
   const [file, setFile] = React.useState<DataType>({
@@ -15,8 +19,21 @@ const AddingIcons = ({ onUpload }: any) => {
     description: '',
     author: '',
   });
-console.log('file', file);
-  const sendVideo = () => {
+  const [videoData, setVideoData] = React.useState();
+  console.log('videoData', videoData);
+  const sendVideo = async () => {
+    const { key } = await Storage.put(`${uuid()}.mp4`, videoData, {
+      contentType: 'video/mp4',
+    });
+    const createVideoInput = {
+      id: uuid(),
+      name: file.title,
+      description: file.description,
+      author: file.author,
+      url: key,
+      like: 0,
+    };
+    await API.graphql(graphqlOperation(createVideo, { input: createVideoInput }));
     onUpload();
   };
 
@@ -38,8 +55,9 @@ console.log('file', file);
         value={file.description}
         onChange={(e: any) => setFile({ ...file, description: e.target.value })}
       />
+      <input type="file" accept="video/*" onChange={(e: any) => setVideoData(e.target.file[0])} />
       <IconButton onClick={sendVideo}>
-        <Publish />
+        <UploadIcon />
       </IconButton>
     </div>
   );
