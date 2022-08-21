@@ -3,8 +3,9 @@ import { updateVideo } from '../graphql/mutations';
 import { API, graphqlOperation, Storage} from 'aws-amplify';
 
 import React from 'react'
-import { IconButton, Paper } from '@mui/material';
+import { Button, IconButton, Paper } from '@mui/material';
 import VideoPlayer from './VideoPlayer';
+import {deleteVideo} from'../graphql/mutations';
 
 const Video = ({video, videos, setVideos, index}: any) => {
   console.log('video', video);
@@ -48,6 +49,10 @@ const Video = ({video, videos, setVideos, index}: any) => {
     }
     setPlayVideo(index);
   };
+  const deletingVideo = async(id: any) => {
+    await API.graphql(graphqlOperation(deleteVideo, { input: { id } }));
+    setVideos(videos.filter((video: any) => video.id !== id));
+  }
   return (
     <Paper key={video.id} variant="elevation" elevation={2} style={{ margin: '10px' }}>
             <div className="videoCard">
@@ -69,6 +74,9 @@ const Video = ({video, videos, setVideos, index}: any) => {
                 </IconButton>
               </div>
               <div className="description">{video.description}</div>
+              <Button variant="text" color="error" onClick={() => deletingVideo(video.id)}>
+                Delete
+              </Button>
             </div>
             {playVideo === index && videoUrl && <VideoPlayer url={videoUrl} />}
           </Paper>

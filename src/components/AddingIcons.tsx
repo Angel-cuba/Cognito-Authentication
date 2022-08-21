@@ -20,17 +20,29 @@ const AddingIcons = ({ onUpload }: any) => {
     author: '',
   });
   const [videoData, setVideoData] = React.useState();
-  console.log('videoData', videoData);
+  const [videoUrl, setVideoUrl] = React.useState('');
+  console.log('videoUrl', videoUrl);
+
+  React.useEffect(() => {
+    const example = async () =>
+      await Storage.put(`${uuid()}.mp4`, videoData, {
+        contentType: 'video/mp4',
+      })
+        .then((result) => {
+          setVideoUrl(result.key);
+        })
+        .catch((error) => {
+          console.log('error', error);
+        });
+    example();
+  }, [videoData]);
   const sendVideo = async () => {
-    const { key } = await Storage.put(`${uuid()}.mp4`, videoData, {
-      contentType: 'video/mp4',
-    });
     const createVideoInput = {
       id: uuid(),
       name: file.title,
       description: file.description,
       author: file.author,
-      url: key,
+      url: videoUrl,
       like: 0,
     };
     await API.graphql(graphqlOperation(createVideo, { input: createVideoInput }));
@@ -55,7 +67,7 @@ const AddingIcons = ({ onUpload }: any) => {
         value={file.description}
         onChange={(e: any) => setFile({ ...file, description: e.target.value })}
       />
-      <input type="file" accept="video/*" onChange={(e: any) => setVideoData(e.target.file[0])} />
+      <input type="file" accept="video/*" onChange={(e: any) => setVideoData(e.target.value)} />
       <IconButton onClick={sendVideo}>
         <UploadIcon />
       </IconButton>
