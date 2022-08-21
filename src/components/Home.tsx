@@ -4,7 +4,7 @@ import { API, graphqlOperation} from 'aws-amplify';
 import { listVideos } from '../graphql/queries';
 import { Add} from '@mui/icons-material';
 import Baner from './Baner';
-import Video from './Video';
+import VideosList from './VideosList';
 import AddingIcons from './AddingIcons';
 
 const Home = () => {
@@ -34,7 +34,7 @@ const Home = () => {
         <h1>No hay</h1>
       ) : (
         videos.map((video: any, index: any) => (
-          <Video key={index} video={video} index={index} videos={videos} setVideos={setVideos}/>
+          <VideosList key={index} video={video} index={index} videos={videos} setVideos={setVideos}/>
         ))
       )}
       {addVideo ? (
